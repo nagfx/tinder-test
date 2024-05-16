@@ -1,10 +1,10 @@
 import React from "react";
 import "../tindernav.css";
+import Navbar from "../components/NavBar";
 const MainTinder = () => {
   return (
     <div className="color-Tinder">
-      <div>Start main </div>
-      <h1>hello</h1>
+      <Navbar />
     </div>
   );
 };

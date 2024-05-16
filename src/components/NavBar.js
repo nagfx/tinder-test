@@ -3,7 +3,7 @@ import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import PersonIcon from "@mui/icons-material/Person";
 import ForumIcon from "@mui/icons-material/Forum";
-import TinderImage from "Assets/pngwing.com.png";
+import { Whatshot } from "@mui/icons-material";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,7 +31,7 @@ const Navbar = () => {
           <PersonIcon />
         </IconButton>
         <Box display="flex" justifyContent="center">
-          <img src={TinderImage} alt="Tinder Logo" className={classes.logo} />
+          <Whatshot className={classes.logo} />
         </Box>
         <IconButton edge="end" className={classes.iconButton}>
           <ForumIcon />
