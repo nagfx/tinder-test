@@ -1,0 +1,38 @@
+.color-Tinder {
+  background: linear-gradient(to right, #c32e58, #ff4400);
+  color: azure;
+}
+
+.Slide-Up {
+  animation-name: slideUp;
+  animation-duration: 2s; /* Adjust duration as needed */
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.Slide-Left {
+  animation-name: slideLeft;
+  animation-duration: 3s; /* Adjust duration as needed */
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
