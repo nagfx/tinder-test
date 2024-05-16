@@ -5,6 +5,7 @@ const MainTinder = () => {
   return (
     <div className="color-Tinder">
       <Navbar />
+      <h1>Hi</h1>
     </div>
   );
 };
