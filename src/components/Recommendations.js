@@ -1,6 +1,6 @@
 // src/components/Recommendations.js
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button } from "@mui/material"; // Import components from MUI
+import { Box, Typography, Button, useMediaQuery } from "@mui/material"; // Import components from MUI
 import { useSwipeable } from "react-swipeable"; // Import useSwipeable hook for swipe functionality
 import UserCard from "./UserCard"; // Import UserCard component
 import users from "../data/users"; // Import user data
@@ -11,6 +11,7 @@ const Recommendations = ({ currentUser }) => {
   const [currentIndex, setCurrentIndex] = useState(0); // State to track current index of recommendation
   const [approveCount, setApproveCount] = useState(0); // State to track number of approvals
   const [declineCount, setDeclineCount] = useState(0); // State to track number of declines
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   // Function to fetch recommendations on component mount and refresh every 24 hours
   useEffect(() => {
@@ -64,15 +65,39 @@ const Recommendations = ({ currentUser }) => {
       {...handlers} // Pass swipe handlers to Box component
     >
       {/* Message at top right corner */}
-      <Box sx={{ position: "absolute", top: 10, right: 120 }}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: 10,
+          right: 120,
+          display: isMobile ? "none" : "block",
+        }}
+      >
         <Typography variant="caption" color="textSecondary">
           Recommendations will be refreshed daily
         </Typography>
       </Box>
       {/* Display approve and decline counts */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", width: 345, mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: 345,
+          mb: 2,
+        }}
+      >
         <Typography>Approved: {approveCount}</Typography>
         <Typography>Declined: {declineCount}</Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: 345,
+          mt: 2,
+        }}
+      >
+        <Typography>Recommendations for the day</Typography>
       </Box>
       {/* Container for user cards */}
       <Box sx={{ position: "relative", width: 345, height: "70%" }}>
@@ -86,7 +111,10 @@ const Recommendations = ({ currentUser }) => {
               width: "100%",
               height: "60%",
               zIndex: recommendations.length - index,
-              transform: index === currentIndex ? "translateX(0)" : `translateX(${(index - currentIndex) * 20}px)`,
+              transform:
+                index === currentIndex
+                  ? "translateX(0)"
+                  : `translateX(${(index - currentIndex) * 20}px)`,
               transition: "transform 0.5s, z-index 0s 0.5s",
               opacity: index < currentIndex ? 0 : 1,
             }}
@@ -96,11 +124,26 @@ const Recommendations = ({ currentUser }) => {
         ))}
       </Box>
       {/* Buttons for approving and declining */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", width: 345, mt: 2 }}>
-        <Button variant="contained" style={{ backgroundColor: "red", color: "white", minWidth: 150 }} onClick={handleDecline}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: 345,
+          mt: 2,
+        }}
+      >
+        <Button
+          variant="contained"
+          style={{ backgroundColor: "red", color: "white", minWidth: 150 }}
+          onClick={handleDecline}
+        >
           Decline
         </Button>
-        <Button variant="contained" style={{ backgroundColor: "green", color: "white", minWidth: 150 }} onClick={handleApprove}>
+        <Button
+          variant="contained"
+          style={{ backgroundColor: "green", color: "white", minWidth: 150 }}
+          onClick={handleApprove}
+        >
           Approve
         </Button>
       </Box>
