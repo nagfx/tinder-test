@@ -1,39 +1,31 @@
+// src/components/NavBar.js
 import React from "react";
 import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import PersonIcon from "@mui/icons-material/Person";
 import ForumIcon from "@mui/icons-material/Forum";
 import { Whatshot } from "@mui/icons-material";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  toolbar: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  logo: {
-    height: "40px",
-  },
-  iconButton: {
-    color: "inherit",
-  },
-}));
-
-const Navbar = () => {
-  const classes = useStyles();
-
+const Navbar = ({ currentUser }) => {
   return (
-    <AppBar position="static" color="default" className={classes.root}>
-      <Toolbar className={classes.toolbar}>
-        <IconButton edge="start" className={classes.iconButton}>
-          <PersonIcon />
-        </IconButton>
-        <Box display="flex" justifyContent="center">
-          <Whatshot className={classes.logo} />
+    <AppBar position="static" color="default">
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box display="flex" alignItems="center">
+          <IconButton edge="start" color="inherit">
+            <PersonIcon />
+          </IconButton>
+          <Typography variant="h6" sx={{ ml: 1 }}>
+            {currentUser.name}
+          </Typography>
         </Box>
-        <IconButton edge="end" className={classes.iconButton}>
+        <Box display="flex" justifyContent="center">
+          <Whatshot sx={{ height: "40px" }} />
+        </Box>
+        <IconButton edge="end" color="inherit">
           <ForumIcon />
         </IconButton>
       </Toolbar>
