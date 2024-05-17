@@ -1,30 +1,44 @@
+// src/components/Recommendations.js
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography } from "@mui/material";
-import { useSwipeable } from "react-swipeable";
-import UserCard from "./UserCard";
-import users from "../data/users";
-import { getRecommendations } from "../utils/recommendations";
+import { Box, Typography, Button } from "@mui/material"; // Import components from MUI
+import { useSwipeable } from "react-swipeable"; // Import useSwipeable hook for swipe functionality
+import UserCard from "./UserCard"; // Import UserCard component
+import users from "../data/users"; // Import user data
+import { getRecommendations } from "../utils/recommendations"; // Import function to get recommendations
 
 const Recommendations = ({ currentUser }) => {
-  const [recommendations, setRecommendations] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [approvedCount, setApprovedCount] = useState(0);
-  const [declinedCount, setDeclinedCount] = useState(0);
+  const [recommendations, setRecommendations] = useState([]); // State to hold recommendations
+  const [currentIndex, setCurrentIndex] = useState(0); // State to track current index of recommendation
+  const [approveCount, setApproveCount] = useState(0); // State to track number of approvals
+  const [declineCount, setDeclineCount] = useState(0); // State to track number of declines
 
+  // Function to fetch recommendations on component mount and refresh every 24 hours
   useEffect(() => {
-    const recs = getRecommendations(users, currentUser);
-    setRecommendations(recs);
-  }, [currentUser]);
+    const fetchRecommendations = () => {
+      const recs = getRecommendations(users, currentUser); // Get recommendations based on user data
+      setRecommendations(recs); // Set recommendations state
+      setCurrentIndex(0); // Reset current index to 0
+    };
 
+    fetchRecommendations(); // Initial fetch of recommendations
+
+    // Refresh recommendations every 24 hours
+    const intervalId = setInterval(fetchRecommendations, 24 * 60 * 60 * 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [currentUser]); // Depend on currentUser to trigger update
+
+  // Function to handle swipe actions (left or right)
   const handleSwipe = (direction) => {
-    if (direction === "left") {
-      setDeclinedCount((prevCount) => prevCount + 1);
-    } else if (direction === "right") {
-      setApprovedCount((prevCount) => prevCount + 1);
+    if (direction === "left" || direction === "right") {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % recommendations.length); // Update current index
+      if (direction === "left") setDeclineCount(declineCount + 1); // Increment decline count
+      if (direction === "right") setApproveCount(approveCount + 1); // Increment approve count
     }
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % recommendations.length);
   };
 
+  // Swipe handlers for left and right swipes
   const handlers = useSwipeable({
     onSwipedLeft: () => handleSwipe("left"),
     onSwipedRight: () => handleSwipe("right"),
@@ -32,6 +46,7 @@ const Recommendations = ({ currentUser }) => {
     trackMouse: true,
   });
 
+  // Approve and Decline button click handlers
   const handleApprove = () => handleSwipe("right");
   const handleDecline = () => handleSwipe("left");
 
@@ -46,13 +61,21 @@ const Recommendations = ({ currentUser }) => {
         overflow: "hidden",
         paddingTop: 4, // Adjust padding top to lower the card stack
       }}
-      {...handlers}
+      {...handlers} // Pass swipe handlers to Box component
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", width: 345, mb: 2 }}>
-        <Typography variant="h5">Approved: {approvedCount}</Typography>
-        <Typography variant="h5">Declined: {declinedCount}</Typography>
+      {/* Message at top right corner */}
+      <Box sx={{ position: "absolute", top: 10, right: 120 }}>
+        <Typography variant="caption" color="textSecondary">
+          Recommendations will be refreshed daily
+        </Typography>
       </Box>
-      <Box sx={{ position: "relative", width: 345, height: "70%" }}> {/* Adjust height to allow larger cards */}
+      {/* Display approve and decline counts */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", width: 345, mb: 2 }}>
+        <Typography>Approved: {approveCount}</Typography>
+        <Typography>Declined: {declineCount}</Typography>
+      </Box>
+      {/* Container for user cards */}
+      <Box sx={{ position: "relative", width: 345, height: "70%" }}>
         {recommendations.map((user, index) => (
           <Box
             key={user.id}
@@ -61,22 +84,23 @@ const Recommendations = ({ currentUser }) => {
               top: 50,
               left: 30,
               width: "100%",
-              height: "60%", // Ensure the card container takes full height
+              height: "60%",
               zIndex: recommendations.length - index,
               transform: index === currentIndex ? "translateX(0)" : `translateX(${(index - currentIndex) * 20}px)`,
-              transition: "transform 0.5s, z-index 0s 0.5s", // Delay z-index change to keep current card on top during animation
-              opacity: index < currentIndex ? 0 : 1, // Hide cards that are swiped away
+              transition: "transform 0.5s, z-index 0s 0.5s",
+              opacity: index < currentIndex ? 0 : 1,
             }}
           >
             <UserCard user={user} />
           </Box>
         ))}
       </Box>
+      {/* Buttons for approving and declining */}
       <Box sx={{ display: "flex", justifyContent: "space-between", width: 345, mt: 2 }}>
-        <Button variant="contained" color="secondary" onClick={handleDecline}>
+        <Button variant="contained" style={{ backgroundColor: "red", color: "white", minWidth: 150 }} onClick={handleDecline}>
           Decline
         </Button>
-        <Button variant="contained" color="primary" onClick={handleApprove}>
+        <Button variant="contained" style={{ backgroundColor: "green", color: "white", minWidth: 150 }} onClick={handleApprove}>
           Approve
         </Button>
       </Box>

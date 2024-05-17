@@ -1,8 +1,8 @@
-// src/components/NavBar.js
 import React from "react";
 import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import PersonIcon from "@mui/icons-material/Person";
-import ForumIcon from "@mui/icons-material/Forum";
+import HomeIcon from "@mui/icons-material/Home";
 import { Whatshot } from "@mui/icons-material";
 
 const Navbar = ({ currentUser }) => {
@@ -25,8 +25,9 @@ const Navbar = ({ currentUser }) => {
         <Box display="flex" justifyContent="center">
           <Whatshot sx={{ height: "40px" }} />
         </Box>
-        <IconButton edge="end" color="inherit">
-          <ForumIcon />
+        {/* Link to home page */}
+        <IconButton edge="end" color="inherit" component={Link} to="/">
+          <HomeIcon />
         </IconButton>
       </Toolbar>
     </AppBar>

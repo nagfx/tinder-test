@@ -7,9 +7,10 @@ import users from "../data/users"; // Import users data
 
 const currentUser = {
   id: 0,
-  name: "Dong Shen",
+  name: "Naman Iqbal",
   gender: "male",
   location: "New York",
+  // You can change to either NYU or Harvard University or Sunway University to see changes.
   university: "Harvard University",
   interests: ["sports", "music"],
 };
