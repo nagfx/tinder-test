@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../tindernav.css";
 import { Box, Typography } from "@mui/material";
-import { DoubleArrow, Whatshot } from "@mui/icons-material";
+import { DoubleArrow, Whatshot, Nightlife } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 const Home = () => {
@@ -39,7 +39,13 @@ const Home = () => {
               style={{ verticalAlign: "text-bottom", paddingBottom: "5px" }}
               fontSize="extra-large"
             />{" "}
-            Get swiping with Tinder <DoubleArrow fontSize="large" />
+            Get swiping{" "}
+            <Nightlife
+              style={{ verticalAlign: "text-bottom", paddingBottom: "5px" }}
+              fontSize="extra-large"
+            />{" "}
+            with uni peeps
+            <DoubleArrow fontSize="large" />
           </Typography>
         </Link>
       </Box>
