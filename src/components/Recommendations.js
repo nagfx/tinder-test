@@ -1,4 +1,3 @@
-// src/components/Recommendations.js
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, useMediaQuery } from "@mui/material"; // Import components from MUI
 import { useSwipeable } from "react-swipeable"; // Import useSwipeable hook for swipe functionality

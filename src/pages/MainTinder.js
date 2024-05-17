@@ -1,4 +1,3 @@
-// src/pages/MainTinder.js
 import React, { useState } from "react";
 import "../tindernav.css";
 import Navbar from "../components/NavBar";
@@ -16,21 +15,39 @@ const currentUser = {
 };
 
 const MainTinder = () => {
-  const initialCounts = users.map(user => ({ id: user.id, approved: 0, declined: 0 }));
+  const initialCounts = users.map((user) => ({
+    id: user.id,
+    approved: 0,
+    declined: 0,
+  }));
   const [counts, setCounts] = useState(initialCounts);
 
   const handleApprove = (userId) => {
-    setCounts(counts.map(count => count.id === userId ? { ...count, approved: count.approved + 1 } : count));
+    setCounts(
+      counts.map((count) =>
+        count.id === userId ? { ...count, approved: count.approved + 1 } : count
+      )
+    );
   };
 
   const handleDecline = (userId) => {
-    setCounts(counts.map(count => count.id === userId ? { ...count, declined: count.declined + 1 } : count));
+    setCounts(
+      counts.map((count) =>
+        count.id === userId ? { ...count, declined: count.declined + 1 } : count
+      )
+    );
   };
 
   return (
     <div className="color-Tinder">
       <Navbar currentUser={currentUser} />
-      <Recommendations currentUser={currentUser} counts={counts} onApprove={handleApprove} onDecline={handleDecline} /> {/* Display Recommendations */}
+      <Recommendations
+        currentUser={currentUser}
+        counts={counts}
+        onApprove={handleApprove}
+        onDecline={handleDecline}
+      />{" "}
+      {/* Display Recommendations */}
     </div>
   );
 };
