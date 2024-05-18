@@ -1,11 +1,16 @@
 import React from "react";
 import { AppBar, Toolbar, IconButton, Typography, Box } from "@mui/material";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import PersonIcon from "@mui/icons-material/Person";
 import HomeIcon from "@mui/icons-material/Home";
 import { Whatshot } from "@mui/icons-material";
 
 const Navbar = ({ currentUser }) => {
+  // Function to handle the home button click to add into UML diagram, to show there is a function to go back to previous page . I was previously just directly onClick running
+  // the function to go to link "/" (homepage)
+  const handleHomeClick = () => {
+    window.location.href = "/";
+  };
+
   return (
     <AppBar position="static" color="default">
       <Toolbar
@@ -25,8 +30,7 @@ const Navbar = ({ currentUser }) => {
         <Box display="flex" justifyContent="center">
           <Whatshot sx={{ height: "40px" }} />
         </Box>
-        {/* Link to home page */}
-        <IconButton edge="end" color="inherit" component={Link} to="/">
+        <IconButton edge="end" color="inherit" onClick={handleHomeClick}>
           <HomeIcon />
         </IconButton>
       </Toolbar>
