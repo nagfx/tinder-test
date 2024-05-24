@@ -1,53 +1,33 @@
-import React, { useState } from "react";
-import "../tindernav.css";
-import Navbar from "../components/NavBar";
-import Recommendations from "../components/Recommendations"; // Import the Recommendations component
-import users from "../data/users"; // Import users data
-
-const currentUser = {
-  id: 0,
-  name: "Naman Iqbal",
-  gender: "male",
-  location: "New York",
-  // You can change to either NYU or Harvard University or Sunway University to see changes.
-  university: "Harvard University",
-  interests: ["sports", "music"],
-};
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import '../tindernav.css';
+import Navbar from '../components/NavBar';
+import Recommendations from '../components/Recommendations';
 
 const MainTinder = () => {
-  const initialCounts = users.map((user) => ({
-    id: user.id,
-    approved: 0,
-    declined: 0,
-  }));
-  const [counts, setCounts] = useState(initialCounts);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const handleApprove = (userId) => {
-    setCounts(
-      counts.map((count) =>
-        count.id === userId ? { ...count, approved: count.approved + 1 } : count
-      )
-    );
-  };
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await axios.get('/auth/currentUser'); // Endpoint to fetch current user data
+        setCurrentUser(response.data);
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+      }
+    };
 
-  const handleDecline = (userId) => {
-    setCounts(
-      counts.map((count) =>
-        count.id === userId ? { ...count, declined: count.declined + 1 } : count
-      )
-    );
-  };
+    fetchCurrentUser();
+  }, []);
+
+  if (!currentUser) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="color-Tinder">
       <Navbar currentUser={currentUser} />
-      <Recommendations
-        currentUser={currentUser}
-        counts={counts}
-        onApprove={handleApprove}
-        onDecline={handleDecline}
-      />{" "}
-      {/* Display Recommendations */}
+      <Recommendations currentUser={currentUser} />
     </div>
   );
 };
