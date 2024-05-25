@@ -1,15 +1,12 @@
-
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import { TextField, Button, Box, Typography } from '@mui/material';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const { setCurrentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,14 +17,10 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('/auth/login', formData);
-      console.log('Login successful:', response.data);
-      // Store token in local storage or context/state management
-      localStorage.setItem('token', response.data.token);
-      // Navigate to the main page or dashboard
-      navigate('/main');
+      setCurrentUser(response.data.user);
+      navigate('/');
     } catch (error) {
       console.error('Error during login:', error);
-      setError('Login failed. Please try again.');
     }
   };
 
@@ -36,11 +29,6 @@ const Login = () => {
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>
-      {error && (
-        <Typography variant="body2" color="error" gutterBottom>
-          {error}
-        </Typography>
-      )}
       <form onSubmit={handleSubmit}>
         <TextField
           fullWidth
@@ -65,11 +53,8 @@ const Login = () => {
         <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
           Login
         </Button>
+        <Link to="/register">Don't have an account? Sign up here!</Link>
 
-        <Box mt={2}>
-
-            <Link to="/register">Don't have an account? Sign up here!</Link>
-        </Box>
       </form>
     </Box>
   );

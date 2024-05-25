@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await axios.get('/auth/currentUser');
+        const response = await axios.get('/auth/user'); // This should be the correct endpoint
         setCurrentUser(response.data);
       } catch (error) {
         console.error('Error fetching current user:', error);
@@ -25,3 +25,6 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+
+export default AuthContext;
