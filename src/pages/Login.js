@@ -1,43 +1,58 @@
-import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import React, { useState, useContext } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext for authentication state
+import { TextField, Button, Box, Typography } from "@mui/material"; // Import Material-UI components
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  // State to manage form data
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  // Get the setUser function from AuthContext
   const { setUser } = useContext(AuthContext);
+  // Hook to programmatically navigate to different routes
   const navigate = useNavigate();
 
+  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/auth/login', formData);
-      localStorage.setItem('token', response.data.token); // Store the JWT token
-      setUser(response.data.user); // Set the current user in context
-      navigate('/');
+      // Send login request to the server
+      const response = await axios.post("/auth/login", formData);
+      // Store the JWT token in local storage
+      localStorage.setItem("token", response.data.token);
+      // Set the current user in context
+      setUser(response.data.user);
+      // Navigate to the home page
+      navigate("/");
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error("Error during login:", error);
     }
   };
 
   return (
-    <Box sx={{ width: 300, mx: 'auto', mt: 5 }}>
+    <Box sx={{ width: 300, mx: "auto", mt: 5 }}>
+      {" "}
+      {/* Center the login form */}
       <Typography variant="h4" gutterBottom>
+        {" "}
+        {/* Display a heading */}
         Login
       </Typography>
       <form onSubmit={handleSubmit}>
+        {" "}
+        {/* Handle form submission */}
         <TextField
           fullWidth
           label="Email"
           name="email"
           type="email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
           required
         />
@@ -47,14 +62,21 @@ const Login = () => {
           name="password"
           type="password"
           value={formData.password}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
           required
         />
-        <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button
+          fullWidth
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+        >
           Login
         </Button>
-        <Link to="/register">Don't have an account? Sign up here!</Link>
+        <Link to="/register">Don't have an account? Sign up here!</Link>{" "}
+        {/* Link to the registration page */}
       </form>
     </Box>
   );

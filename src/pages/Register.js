@@ -1,63 +1,80 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { TextField, Button, Box, Typography } from "@mui/material";
 
 const Register = () => {
+  // State to manage form data
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    gender: '',
-    location: '',
-    university: '',
-    interests: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    gender: "",
+    location: "",
+    university: "",
+    interests: "",
   });
-  const [error, setError] = useState('');
+  // State to manage error messages
+  const [error, setError] = useState("");
+  // Hook to programmatically navigate to different routes
   const navigate = useNavigate();
 
+  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     try {
+      // Format the data for the API request
       const formattedData = {
         ...formData,
-        interests: formData.interests.split(',').map(interest => interest.trim()),
+        interests: formData.interests
+          .split(",")
+          .map((interest) => interest.trim()),
       };
-      await axios.post('/auth/register', formattedData);
-      navigate('/login');
+      // Send registration request to the server
+      await axios.post("/auth/register", formattedData);
+      // Navigate to the login page upon successful registration
+      navigate("/login");
     } catch (error) {
-      console.error('Error during registration:', error);
-      setError('Registration failed. Please try again.');
+      console.error("Error during registration:", error);
+      setError("Registration failed. Please try again.");
     }
   };
 
   return (
-    <Box sx={{ width: 300, mx: 'auto', mt: 5 }}>
+    <Box sx={{ width: 300, mx: "auto", mt: 5 }}>
+      {" "}
+      {/* Center the registration form */}
       <Typography variant="h4" gutterBottom>
+        {" "}
+        {/* Display a heading */}
         Register
       </Typography>
-      {error && (
+      {error /* Display error message if there's an error */ && (
         <Typography variant="body2" color="error" gutterBottom>
           {error}
         </Typography>
       )}
       <form onSubmit={handleSubmit}>
+        {" "}
+        {/* Handle form submission */}
         <TextField
           fullWidth
           label="Name"
           name="name"
           value={formData.name}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
           required
         />
@@ -67,7 +84,7 @@ const Register = () => {
           name="email"
           type="email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
           required
         />
@@ -77,7 +94,7 @@ const Register = () => {
           name="password"
           type="password"
           value={formData.password}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
           required
         />
@@ -87,7 +104,7 @@ const Register = () => {
           name="confirmPassword"
           type="password"
           value={formData.confirmPassword}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
           required
         />
@@ -96,7 +113,7 @@ const Register = () => {
           label="Gender"
           name="gender"
           value={formData.gender}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
         />
         <TextField
@@ -104,7 +121,7 @@ const Register = () => {
           label="Location"
           name="location"
           value={formData.location}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
         />
         <TextField
@@ -112,7 +129,7 @@ const Register = () => {
           label="University"
           name="university"
           value={formData.university}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
         />
         <TextField
@@ -120,10 +137,16 @@ const Register = () => {
           label="Interests (comma separated)"
           name="interests"
           value={formData.interests}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
         />
-        <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+        <Button
+          fullWidth
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+        >
           Register
         </Button>
       </form>
