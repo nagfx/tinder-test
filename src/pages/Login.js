@@ -6,7 +6,7 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const { setCurrentUser } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,7 +17,8 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('/auth/login', formData);
-      setCurrentUser(response.data.user);
+      localStorage.setItem('token', response.data.token); // Store the JWT token
+      setUser(response.data.user); // Set the current user in context
       navigate('/');
     } catch (error) {
       console.error('Error during login:', error);
@@ -54,7 +55,6 @@ const Login = () => {
           Login
         </Button>
         <Link to="/register">Don't have an account? Sign up here!</Link>
-
       </form>
     </Box>
   );

@@ -1,30 +1,54 @@
-import axios from 'axios';
 import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      try {
-        const response = await axios.get('/auth/user'); // This should be the correct endpoint
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error('Error fetching current user:', error);
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.get('/auth/user', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          setUser(response.data);
+        } catch (error) {
+          console.error('Error fetching current user:', error);
+        }
       }
+      setLoading(false);
     };
 
     fetchCurrentUser();
   }, []);
 
+  const login = async (email, password) => {
+    try {
+      const response = await axios.post('/auth/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      setUser(response.data.user);
+    } catch (error) {
+      console.error('Error during login:', error);
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ currentUser, setCurrentUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-
-export default AuthContext;
+export { AuthContext, AuthProvider };

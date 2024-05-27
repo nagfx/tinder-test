@@ -1,31 +1,9 @@
-// backend/routes/auth.js
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
-
-// Middleware to authenticate using JWT
-const authenticate = passport.authenticate('jwt', { session: false });
-
-
-// Route to get current user
-router.get('/user', authenticate, async (req, res) => {
-  try {
-    const user = await User.findByPk(req.user.id, {
-      attributes: { exclude: ['password'] },
-    });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching current user:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
 // Register route
 router.post('/register', async (req, res) => {
@@ -86,12 +64,23 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Current user route
-router.get('/current_user', (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Not authenticated' });
+// Middleware to authenticate using JWT
+const authenticate = passport.authenticate('jwt', { session: false });
+
+// Route to get current user
+router.get('/user', authenticate, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] },
+    });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching current user:', error);
+    res.status(500).json({ message: 'Server error' });
   }
-  res.status(200).json(req.user);
 });
 
 module.exports = router;
