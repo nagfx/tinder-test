@@ -6,6 +6,7 @@ const { initModels } = require('./models');
 const authRoutes = require('./routes/auth');
 const path = require('path');
 const cors = require('cors');
+const userRoutes = require('./routes/user');
 
 
 const app = express();
@@ -31,6 +32,9 @@ app.use(passport.session());
 
 // Auth routes
 app.use('/auth', authRoutes);
+
+// Route to fetch users
+app.use('/api', userRoutes);
 
 // Serve the React app
 app.use(express.static(path.join(__dirname, '../build')));

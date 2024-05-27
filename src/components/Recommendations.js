@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button, useMediaQuery } from "@mui/material"; // Import components from MUI
-import { useSwipeable } from "react-swipeable"; // Import useSwipeable hook for swipe functionality
-import UserCard from "./UserCard"; // Import UserCard component
-import users from "../data/users"; // Import user data
-import { getRecommendations } from "../utils/recommendations"; // Import function to get recommendations
+import { Box, Typography, Button, useMediaQuery } from "@mui/material";
+import { useSwipeable } from "react-swipeable";
+import UserCard from "./UserCard";
+import axios from 'axios'; // Import axios for API calls
+import { getRecommendations } from "../utils/recommendations";
 
 const Recommendations = ({ currentUser }) => {
-  const [recommendations, setRecommendations] = useState([]); // State to hold recommendations
-  const [currentIndex, setCurrentIndex] = useState(0); // State to track current index of recommendation
-  const [approveCount, setApproveCount] = useState(0); // State to track number of approvals
-  const [declineCount, setDeclineCount] = useState(0); // State to track number of declines
+  const [recommendations, setRecommendations] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [approveCount, setApproveCount] = useState(0);
+  const [declineCount, setDeclineCount] = useState(0);
   const isMobile = useMediaQuery("(max-width:600px)");
 
   // Function to fetch recommendations on component mount and refresh every 24 hours
   useEffect(() => {
-    const fetchRecommendations = () => {
-      const recs = getRecommendations(users, currentUser); // Get recommendations based on user data
-      setRecommendations(recs); // Set recommendations state
-      setCurrentIndex(0); // Reset current index to 0
+    const fetchRecommendations = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/users'); // Fetch users from the API
+        const users = response.data;
+        const recs = getRecommendations(users, currentUser); // Get recommendations based on user data
+        setRecommendations(recs); // Set recommendations state
+        setCurrentIndex(0); // Reset current index to 0
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
     };
 
     fetchRecommendations(); // Initial fetch of recommendations

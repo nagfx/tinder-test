@@ -4,8 +4,6 @@ import { Card, CardContent, Typography } from "@mui/material";
 const UserCard = ({ user }) => {
   return (
     <Card sx={{ maxWidth: 305, marginBottom: 2, height: "80%" }}>
-      {" "}
-      {/* Set the height to 100% */}
       <CardContent>
         <Typography mt={5} ml={2} variant="h5" component="div">
           {user.name}
