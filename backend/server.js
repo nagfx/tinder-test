@@ -5,11 +5,14 @@ const passport = require('./config/passport');
 const { initModels } = require('./models');
 const authRoutes = require('./routes/auth');
 const path = require('path');
+const cors = require('cors');
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware for parsing JSON and urlencoded data
+// Middleware for parsing JSON and urlencoded data and enabling CORS for all routes
+app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

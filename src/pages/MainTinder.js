@@ -10,7 +10,12 @@ const MainTinder = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await axios.get('/auth/currentUser'); // Endpoint to fetch current user data
+        const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+        const response = await axios.get('http://localhost:3001/auth/user', { // Ensure the correct port is used
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         setCurrentUser(response.data);
       } catch (error) {
         console.error('Error fetching current user:', error);
@@ -26,7 +31,6 @@ const MainTinder = () => {
 
   return (
     <div className="color-Tinder">
-      <Navbar currentUser={currentUser} />
       <Recommendations currentUser={currentUser} />
     </div>
   );
