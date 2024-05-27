@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { AppBar, Toolbar, IconButton, Typography, Box } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import HomeIcon from '@mui/icons-material/Home';
 import { Whatshot } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
-const Navbar = ({ currentUser }) => {
+const Navbar = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <AppBar position="static" color="default">
       <Toolbar
@@ -18,9 +21,9 @@ const Navbar = ({ currentUser }) => {
           <IconButton edge="start" color="inherit">
             <PersonIcon />
           </IconButton>
-          {currentUser && (
+          {user && (
             <Typography variant="h6" sx={{ ml: 1 }}>
-              {currentUser.name}
+              {user.name}
             </Typography>
           )}
         </Box>
