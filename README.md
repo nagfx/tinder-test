@@ -9,7 +9,8 @@ In the project directory, you can run:
 ### First to install
 
 ### run `npm install --force`
-### then cd into backend and run node scripts/syncDatabase.js in another terminal and then npm run dev
+### then cd into backend and run run `npm install --force 
+### then run 'node scripts/syncDatabase.js' in another terminal while being inside backend folder and then npm run dev
 ### cd back into root and then in another terminal
 ### to run
 
