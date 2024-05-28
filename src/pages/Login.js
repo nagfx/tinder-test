@@ -1,32 +1,49 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // Import AuthContext for authentication state
-import { TextField, Button, Box, Typography } from "@mui/material"; // Import Material-UI components
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, TextField, Button, Link } from "@mui/material";
 
 const Login = () => {
-  // State to manage form data
   const [formData, setFormData] = useState({ email: "", password: "" });
-  // Get the setUser function from AuthContext
-  const { setUser } = useContext(AuthContext);
-  // Hook to programmatically navigate to different routes
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" }); // Clear error when user starts typing
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation logic
+    let valid = true;
+    let tempErrors = { email: "", password: "" };
+
+    if (!formData.email) {
+      tempErrors.email = "Email is required";
+      valid = false;
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      tempErrors.email = "Invalid email format";
+      valid = false;
+    }
+
+    if (!formData.password) {
+      tempErrors.password = "Password is required";
+      valid = false;
+    }
+
+    setErrors(tempErrors);
+
+    if (!valid) return;
+
     try {
       // Send login request to the server
-      const response = await axios.post("/auth/login", formData);
+      // const response = await axios.post("/auth/login", formData);
+      // For testing purposes, mock response
+      const response = { data: { token: "mockToken", user: {} } };
       // Store the JWT token in local storage
       localStorage.setItem("token", response.data.token);
-      // Set the current user in context
-      setUser(response.data.user);
       // Navigate to the home page
       navigate("/");
     } catch (error) {
@@ -36,25 +53,21 @@ const Login = () => {
 
   return (
     <Box sx={{ width: 300, mx: "auto", mt: 5 }}>
-      {" "}
-      {/* Center the login form */}
       <Typography variant="h4" gutterBottom>
-        {" "}
-        {/* Display a heading */}
         Login
       </Typography>
       <form onSubmit={handleSubmit}>
-        {" "}
-        {/* Handle form submission */}
         <TextField
           fullWidth
           label="Email"
           name="email"
           type="email"
           value={formData.email}
-          onChange={handleChange} // Handle input changes
+          onChange={handleChange}
           margin="normal"
-          required
+          // don't use 'required' it will conflict with the regexes i added
+          error={Boolean(errors.email)}
+          helperText={errors.email}
         />
         <TextField
           fullWidth
@@ -62,9 +75,11 @@ const Login = () => {
           name="password"
           type="password"
           value={formData.password}
-          onChange={handleChange} // Handle input changes
+          onChange={handleChange}
           margin="normal"
-          required
+          // don't use 'required' it will conflict with the regexes i added
+          error={Boolean(errors.password)}
+          helperText={errors.password}
         />
         <Button
           fullWidth
@@ -75,8 +90,7 @@ const Login = () => {
         >
           Login
         </Button>
-        <Link to="/register">Don't have an account? Sign up here!</Link>{" "}
-        {/* Link to the registration page */}
+        <Link to="/register">Don't have an account? Sign up here!</Link>
       </form>
     </Box>
   );
