@@ -1,18 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Box, Typography, TextField, Button, Link } from "@mui/material";
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext for authentication state
+import { TextField, Button, Box, Typography } from "@mui/material"; // Import Material-UI components
 
 const Login = () => {
+  // State to manage form data
   const [formData, setFormData] = useState({ email: "", password: "" });
+  // State to manage error messages
   const [errors, setErrors] = useState({ email: "", password: "" });
+  // Get the setUser function from AuthContext
+  const { setUser } = useContext(AuthContext);
+  // Hook to programmatically navigate to different routes
   const navigate = useNavigate();
 
+  // Handle form input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" }); // Clear error when user starts typing
   };
 
+  // Validate email format
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,7 +37,7 @@ const Login = () => {
     if (!formData.email) {
       tempErrors.email = "Email is required";
       valid = false;
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+    } else if (!validateEmail(formData.email)) {
       tempErrors.email = "Invalid email format";
       valid = false;
     }
@@ -39,35 +53,38 @@ const Login = () => {
 
     try {
       // Send login request to the server
-      // const response = await axios.post("/auth/login", formData);
-      // For testing purposes, mock response
-      const response = { data: { token: "mockToken", user: {} } };
+      const response = await axios.post("/auth/login", formData);
       // Store the JWT token in local storage
       localStorage.setItem("token", response.data.token);
+      // Set the current user in context
+      setUser(response.data.user);
       // Navigate to the home page
       navigate("/");
     } catch (error) {
       console.error("Error during login:", error);
+      // Optionally, you can set an error state for server errors
     }
   };
 
   return (
     <Box sx={{ width: 300, mx: "auto", mt: 5 }}>
+      {/* Center the login form */}
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>
       <form onSubmit={handleSubmit}>
+        {/* Handle form submission */}
         <TextField
           fullWidth
           label="Email"
           name="email"
           type="email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
-          // don't use 'required' it will conflict with the regexes i added
-          error={Boolean(errors.email)}
-          helperText={errors.email}
+          // required disable 'required' so we can use our own regex/validations
+          error={Boolean(errors.email)} // Display error state if there's an error
+          helperText={errors.email} // Show error message
         />
         <TextField
           fullWidth
@@ -75,11 +92,11 @@ const Login = () => {
           name="password"
           type="password"
           value={formData.password}
-          onChange={handleChange}
+          onChange={handleChange} // Handle input changes
           margin="normal"
-          // don't use 'required' it will conflict with the regexes i added
-          error={Boolean(errors.password)}
-          helperText={errors.password}
+          // required disable 'required' so we can use our own regex/validations
+          error={Boolean(errors.password)} // Display error state if there's an error
+          helperText={errors.password} // Show error message
         />
         <Button
           fullWidth
@@ -91,6 +108,7 @@ const Login = () => {
           Login
         </Button>
         <Link to="/register">Don't have an account? Sign up here!</Link>
+        {/* Link to the registration page */}
       </form>
     </Box>
   );
